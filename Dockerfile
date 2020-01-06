@@ -1,15 +1,8 @@
-FROM ubuntu
-
-MAINTAINER I'm onkar
-
-RUN apt-get update
-
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y graphviz ruby-dev gem build-essential
-RUN gem install docker-api sinatra
-
-ADD . /usr/src/app/
-WORKDIR /usr/src/app
-RUN chmod +x image-graph.sh
-
-CMD [""]
-ENTRYPOINT ["./image-graph.sh"]
+FROM jenkins                                             
+COPY jenkins_plugins.txt /tmp/jenkins_plugins.txt  
+RUN /usr/local/bin/plugins.sh /tmp/jenkins_plugins.txt
+USER root  
+RUN rm /tmp/jenkins_plugins.txt   
+RUN groupadd -g 999 docker 
+RUN addgroup -a jenkins docker
+USER jenkins
